@@ -1,0 +1,192 @@
+CREATE TABLE Customer (
+Customer_ID	VARCHAR (5) 	NOT NULL,
+Customer_Name	VARCHAR (40)	NOT NULL,
+Date_of_Birth	DATE		NOT NULL,
+Gender		CHAR		DEFAULT 'M' CHECK (UPPER(Gender) In ('M', 'F')),
+Phone_No	VARCHAR (15)	NOT NULL,
+Email		VARCHAR (35)	NOT NULL,
+Country		VARCHAR (35)	NOT NULL,
+CONSTRAINT CHK_CustEmailFormat CHECK (Email LIKE '%_@_%._%'),
+PRIMARY KEY (Customer_ID)
+);
+
+
+
+CREATE TABLE Flight (
+Flight_ID		VARCHAR (5) 	NOT NULL,
+Model			VARCHAR (25) 	NOT NULL,
+Flight_Hours		NUMBER		NOT NULL,
+Seat_Capacity		NUMBER 		NOT NULL,
+Next_Maintenance_Date 	DATE 		NOT NULL,	
+PRIMARY KEY (Flight_id)
+);
+
+
+
+CREATE TABLE Airport (
+Airport_ID 		VARCHAR (5)	NOT NULL,
+Airport_Name 		VARCHAR (50)	NOT NULL,
+Address 		VARCHAR (100)	NOT NULL,
+PRIMARY KEY (Airport_ID)
+);
+
+
+
+CREATE TABLE Crew (
+Crew_ID			VARCHAR (6)	NOT NULL,
+Start_WorkingDate	DATE		NOT NULL,
+End_WorkingDate		DATE		NOT NULL,
+PRIMARY KEY (Crew_ID)
+);
+
+
+
+CREATE TABLE Employee (
+Employee_ID 		VARCHAR (5)	 	NOT NULL,
+Employee_Name 		VARCHAR (40)		NOT NULL,
+Date_of_Birth 		DATE			NOT NULL,
+Gender 			CHAR			DEFAULT 'M' CHECK (UPPER(Gender) In ('M', 'F')),
+Phone_No 		VARCHAR (15)		NOT NULL,
+Email 			VARCHAR (35)		NOT NULL,
+Job_Title 		VARCHAR (20) 		NOT NULL,
+Joining_Date 		DATE 		 	NOT NULL,
+Salary 			NUMBER (8, 2) 		NOT NULL,
+CONSTRAINT CHK_EmpEmailFormat CHECK (Email LIKE '%_@_%._%'),
+PRIMARY KEY (Employee_ID)
+);
+
+
+
+CREATE TABLE Route (
+Route_ID		VARCHAR (5) 	NOT NULL,
+Departure_Airport	VARCHAR (5) 	NOT NULL,
+Destination_Airport	VARCHAR (5)	NOT NULL,
+PRIMARY KEY (Route_ID),
+FOREIGN KEY (Departure_Airport)		REFERENCES Airport (Airport_ID),
+FOREIGN KEY (Destination_Airport)	REFERENCES Airport (Airport_ID),
+UNIQUE (Departure_Airport, Destination_Airport),
+CONSTRAINT CHK_DifferentAirports CHECK (Departure_Airport <> Destination_Airport)
+);
+
+
+
+CREATE TABLE Flight_Schedule (
+Schedule_ID		VARCHAR (6)	NOT NULL,
+Flight_ID		VARCHAR (5)	NOT NULL,
+Route_ID		VARCHAR (5)	NOT NULL,
+Crew_ID			VARCHAR (6)	NOT NULL,
+Departure_Date		DATE 		NOT NULL,
+Departure_Time		VARCHAR (8)	NOT NULL,
+Arrival_Date		DATE            NOT NULL,
+Arrival_Time		VARCHAR (8)	NOT NULL,
+Flight_Duration		NUMBER	 	NOT NULL,
+Price			NUMBER (8,2) 	NOT NULL,
+PRIMARY KEY (Schedule_ID),
+FOREIGN KEY (Flight_ID)		REFERENCES Flight (Flight_ID),
+FOREIGN KEY (Route_ID)		REFERENCES Route (Route_ID),
+FOREIGN KEY (Crew_ID)		REFERENCES Crew (Crew_ID)
+);
+
+
+
+CREATE TABLE Seat (
+Seat_ID		VARCHAR (5) 		NOT NULL,
+Flight_ID	VARCHAR (5) 		NOT NULL,
+Seat_No		NUMBER			NOT NULL,
+Seat_Type	VARCHAR (15)		NOT NULL,
+Seat_Price	NUMBER (8, 2)		NOT NULL,
+UNIQUE (Flight_ID, Seat_No),
+PRIMARY KEY (Seat_ID),
+FOREIGN KEY (Flight_ID)	REFERENCES Flight (Flight_ID)
+);
+
+
+
+CREATE TABLE Booking (
+Booking_ID		VARCHAR (5)		NOT NULL,
+Customer_ID		VARCHAR (5)		NOT NULL,
+Schedule_ID		VARCHAR (6) 		NOT NULL,
+Booking_Date		DATE 			NOT NULL,
+Booking_Time		VARCHAR	(8)		NOT NULL,
+Booking_Method		VARCHAR (20)		NOT NULL,
+Seat_Qty		NUMBER 			NOT NULL,
+PRIMARY KEY (Booking_ID),
+FOREIGN KEY (Customer_ID)		REFERENCES Customer (Customer_ID),
+FOREIGN KEY (Schedule_ID)		REFERENCES Flight_Schedule (Schedule_ID)
+);
+
+
+
+CREATE TABLE Booking_Seat (
+Booking_Seat_ID		VARCHAR (6)		NOT NULL,
+Booking_ID		VARCHAR (5)		NOT NULL,
+Seat_ID			VARCHAR (5) 		NOT NULL,
+Meal_Preference		VARCHAR (20),
+Baggage_Weight		NUMBER			NOT NULL,
+UNIQUE (Booking_ID, Seat_ID),
+PRIMARY KEY (Booking_Seat_ID),
+FOREIGN KEY (Booking_ID)		REFERENCES Booking (Booking_ID),
+FOREIGN KEY (Seat_ID)			REFERENCES Seat (Seat_ID)
+);
+
+
+
+CREATE TABLE Payment (
+Payment_ID		VARCHAR (5)		NOT NULL,
+Booking_ID		VARCHAR (5)		NOT NULL	UNIQUE,
+Payment_Amount		NUMBER (8, 2)		NOT NULL,
+Payment_Method		VARCHAR (20)		NOT NULL,
+Payment_Date		DATE			NOT NULL,
+Payment_Time		VARCHAR (8)		NOT NULL,
+PRIMARY KEY (Payment_ID),
+FOREIGN KEY (Booking_ID)		REFERENCES Booking (Booking_ID)
+);
+
+
+
+CREATE TABLE Cancellation (
+Cancell_ID		VARCHAR (6)		NOT NULL,
+Booking_ID		VARCHAR (5)		NOT NULL	UNIQUE,
+Cancell_Date		DATE 			NOT NULL,
+Cancell_Time		VARCHAR (8)		NOT NULL,
+Cancell_Refund		NUMBER (8, 2)		NOT NULL,
+PRIMARY KEY (Cancell_ID),
+FOREIGN KEY (Booking_ID)		REFERENCES Booking (Booking_ID)
+);
+
+
+
+CREATE TABLE Membership (
+Member_ID		VARCHAR (5)		NOT NULL,
+Customer_ID		VARCHAR (5) 		NOT NULL	UNIQUE,
+Miles_Earned		NUMBER			NOT NULL,
+Joining_Date		DATE			NOT NULL,
+Joining_Time		VARCHAR (8)		NOT NULL,
+PRIMARY KEY (Member_ID),
+FOREIGN KEY (Customer_ID)		REFERENCES Customer (Customer_ID)
+);
+
+
+
+CREATE TABLE Maintenance_Record (
+Maintenance_ID 		VARCHAR (6)		NOT NULL,
+Flight_ID		VARCHAR (5)		NOT NULL,
+Maintenance_Type	VARCHAR (25)		NOT NULL,
+Maintenance_Date	DATE			NOT NULL,
+Time_Duration		NUMBER			NOT NULL,
+Description		VARCHAR (100)		NOT NULL,
+PRIMARY KEY (Maintenance_ID),
+FOREIGN KEY (Flight_ID)	REFERENCES Flight (Flight_ID)
+);
+
+
+
+CREATE TABLE Crew_Member (
+Crew_ID		VARCHAR (6)	NOT NULL,
+Employee_ID	VARCHAR (5)	NOT NULL,
+Role 		VARCHAR (20)	NOT NULL,
+Assign_Date	DATE		NOT NULL,
+PRIMARY KEY (Crew_ID, Employee_ID),
+FOREIGN KEY (Crew_ID) 		REFERENCES Crew (Crew_ID),
+FOREIGN KEY (Employee_ID)	REFERENCES Employee (Employee_ID)
+);

@@ -1,0 +1,21 @@
+SET LINESIZE 120
+SET PAGESIZE 30
+
+ACCEPT p_year PROMPT 'Please enter the year: '
+
+COLUMN "Flight ID" FORMAT A10
+COLUMN "Number of Bookings" FORMAT 9999
+TTITLE "Most Frequently Booked Flights in &p_year"
+
+SELECT Flight_ID AS "Flight ID", COUNT(*) AS "Number of Bookings"
+FROM Booking B, Flight_Schedule FS
+WHERE B.Schedule_ID = FS.Schedule_ID 
+AND TO_CHAR(TO_DATE(Booking_Date, 'DD/MM/YYYY'), 'YYYY') = &p_year
+GROUP BY Flight_ID
+ORDER BY COUNT(*) DESC;
+
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF
+

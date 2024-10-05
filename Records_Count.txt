@@ -1,0 +1,29 @@
+SELECT COUNT(*) AS Customer_Count FROM Customer;
+
+SELECT COUNT(*) AS Flight_Count FROM Flight;
+
+SELECT COUNT(*) AS Airport_Count FROM Airport;
+
+SELECT COUNT(*) AS Crew_Count FROM Crew;
+
+SELECT COUNT(*) AS Employee_Count FROM Employee;
+
+SELECT COUNT(*) AS Route_Count FROM Route;
+
+SELECT COUNT(*) AS Flight_Schedule_Count FROM Flight_Schedule;
+
+SELECT COUNT(*) AS Seat_Count FROM Seat;
+
+SELECT COUNT(*) AS Booking_Count FROM Booking;
+
+SELECT COUNT(*) AS Booking_Seat_Count FROM Booking_Seat;
+
+SELECT COUNT(*) AS Payment_Count FROM Payment;
+
+SELECT COUNT(*) AS Cancellation_Count FROM Cancellation;
+
+SELECT COUNT(*) AS Membership_Count FROM Membership;
+
+SELECT COUNT(*) AS Maintenance_Record_Count FROM Maintenance_Record;
+
+SELECT COUNT(*) AS Crew_Member_Count FROM Crew_Member;

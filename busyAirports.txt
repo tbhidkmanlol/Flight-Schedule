@@ -1,0 +1,28 @@
+SET LINESIZE 120
+SET PAGESIZE 30
+
+ACCEPT p_year PROMPT 'Please enter the year: '
+
+COLUMN "Flight ID" FORMAT A10
+COLUMN "Departure Airport" FORMAT A30
+COLUMN "Destination Airport" FORMAT A30
+COLUMN "Number of Bookings" FORMAT 9999
+TTITLE "Most Frequently Booked Flights in &p_year"
+
+SELECT FS.Flight_ID AS "Flight ID", 
+       A1.Airport_Name AS "Departure Airport", 
+       A2.Airport_Name AS "Destination Airport", 
+       COUNT(*) AS "Number of Bookings"
+FROM Booking B, Flight_Schedule FS, Airport A1, Airport A2, Route R
+WHERE B.Schedule_ID = FS.Schedule_ID 
+AND EXTRACT(YEAR FROM FS.Departure_Date) = &p_year
+AND R.Route_ID = FS.Route_ID
+AND A1.Airport_ID = R.Departure_Airport
+AND A2.Airport_ID = R.Destination_Airport
+GROUP BY FS.Flight_ID, A1.Airport_Name, A2.Airport_Name
+ORDER BY COUNT(*) DESC;
+
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF

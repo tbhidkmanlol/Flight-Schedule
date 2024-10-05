@@ -1,0 +1,25 @@
+SET LINESIZE 120
+SET PAGESIZE 30
+PROMPT
+PROMPT 'Purpose: To review employee salaries for fair compensation and effective budgeting.'
+PROMPT
+ACCEPT p_job_title PROMPT 'Please enter the job title: '
+
+COLUMN "Employee ID" FORMAT A11	
+COLUMN "Employee Name" FORMAT A30
+COLUMN "Job Title" FORMAT A20
+COLUMN "Salary" FORMAT $99999.99
+TTITLE "Employee Salary Listing for &p_job_title"
+
+SELECT Employee_ID AS "Employee ID",
+       Employee_Name AS "Employee Name",
+       Job_Title AS "Job Title",
+       Salary
+FROM Employee
+WHERE Job_Title = '&p_job_title'
+ORDER BY Salary DESC;
+
+CLEAR COLUMNS
+CLEAR BREAKS
+CLEAR COMPUTES
+TTITLE OFF;
